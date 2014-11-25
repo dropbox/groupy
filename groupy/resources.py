@@ -29,9 +29,15 @@ class Group(object):
 
 
 class User(object):
-    def __init__(self, groups):
+    def __init__(self, groups, public_keys, permissions):
         self.groups = ResourceDict(groups)
+        self.public_keys = public_keys
+        self.permissions = permissions
 
     @classmethod
     def from_payload(cls, payload):
-        return cls(payload["data"]["groups"])
+        return cls(
+            payload["data"]["groups"],
+            payload["data"]["user"]["public_keys"],
+            payload["data"]["permissions"]
+        )
