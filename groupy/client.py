@@ -5,7 +5,7 @@ import time
 from tornado.httpclient import HTTPClient, HTTPError
 
 from . import exc
-from .collections import Users, Groups, Permissions
+from .collations import Users, Groups, Permissions
 
 
 class Groupy(object):

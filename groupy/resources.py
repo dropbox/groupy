@@ -1,3 +1,8 @@
+from collections import namedtuple
+
+MappedPermission = namedtuple('MappedPermission',
+                              ['permission', 'argument', 'granted_on', 'distance', 'path'])
+
 
 class ResourceDict(dict):
     def __call__(self, direct=False, roles=None):
@@ -18,7 +23,9 @@ class Group(object):
         self.groups = ResourceDict(groups)
         self.users = ResourceDict(users)
         self.subgroups = ResourceDict(subgroups)
-        self.permissions = permissions
+        self.permissions = [
+            MappedPermission(**permission) for permission in permissions
+        ]
 
     @classmethod
     def from_payload(cls, payload):
@@ -34,7 +41,9 @@ class User(object):
     def __init__(self, groups, public_keys, permissions):
         self.groups = ResourceDict(groups)
         self.public_keys = public_keys
-        self.permissions = permissions
+        self.permissions = [
+            MappedPermission(**permission) for permission in permissions
+        ]
 
     @classmethod
     def from_payload(cls, payload):
