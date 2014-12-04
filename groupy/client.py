@@ -5,7 +5,7 @@ import time
 from tornado.httpclient import HTTPClient, HTTPError
 
 from . import exc
-from .collections import Users, Groups
+from .collections import Users, Groups, Permissions
 
 
 class Groupy(object):
@@ -27,6 +27,7 @@ class Groupy(object):
 
         self.users = Users(self, "users")
         self.groups = Groups(self, "groups")
+        self.permissions = Permissions(self, "permissions")
 
     def _try_get(self, path):
         for idx in range(self.max_backend_tries):

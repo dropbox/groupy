@@ -14,17 +14,19 @@ class ResourceDict(dict):
 
 
 class Group(object):
-    def __init__(self, groups, users, subgroups):
+    def __init__(self, groups, users, subgroups, permissions):
         self.groups = ResourceDict(groups)
         self.users = ResourceDict(users)
         self.subgroups = ResourceDict(subgroups)
+        self.permissions = permissions
 
     @classmethod
     def from_payload(cls, payload):
         return cls(
             payload["data"]["groups"],
             payload["data"]["users"],
-            payload["data"]["subgroups"]
+            payload["data"]["subgroups"],
+            payload["data"]["permissions"],
         )
 
 
@@ -40,4 +42,18 @@ class User(object):
             payload["data"]["groups"],
             payload["data"]["user"]["public_keys"],
             payload["data"]["permissions"]
+        )
+
+
+class Permission(object):
+    def __init__(self, groups):
+        self.groups = {
+            groupname: Group.from_payload({"data": groups[groupname]})
+            for groupname in groups
+        }
+
+    @classmethod
+    def from_payload(cls, payload):
+        return cls(
+            payload["data"]["groups"],
         )
