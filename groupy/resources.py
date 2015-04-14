@@ -1,7 +1,8 @@
 from collections import namedtuple
 
 MappedPermission = namedtuple('MappedPermission',
-                              ['permission', 'argument', 'granted_on', 'distance', 'path'])
+                              ['permission', 'audited', 'argument', 'granted_on', 'distance',
+                               'path'])
 
 UserMetadata = namedtuple('UserMetadata',
                           ['key', 'value', 'last_modified'])
@@ -22,13 +23,14 @@ class ResourceDict(dict):
 
 
 class Group(object):
-    def __init__(self, groups, users, subgroups, permissions):
+    def __init__(self, groups, users, subgroups, permissions, audited):
         self.groups = ResourceDict(groups)
         self.users = ResourceDict(users)
         self.subgroups = ResourceDict(subgroups)
         self.permissions = [
             MappedPermission(**permission) for permission in permissions
         ]
+        self.audited = audited
 
     @classmethod
     def from_payload(cls, payload):
@@ -37,6 +39,7 @@ class Group(object):
             payload["data"]["users"],
             payload["data"]["subgroups"],
             payload["data"]["permissions"],
+            payload["data"]["audited"],
         )
 
 
