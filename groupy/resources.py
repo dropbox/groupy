@@ -1,8 +1,7 @@
 from collections import namedtuple
 
 MappedPermission = namedtuple('MappedPermission',
-                              ['permission', 'audited', 'argument', 'granted_on', 'distance',
-                               'path'])
+                              ['permission', 'argument', 'granted_on', 'distance', 'path'])
 
 UserMetadata = namedtuple('UserMetadata',
                           ['key', 'value', 'last_modified'])
@@ -39,7 +38,9 @@ class Group(object):
             payload["data"]["users"],
             payload["data"]["subgroups"],
             payload["data"]["permissions"],
-            payload["data"]["audited"],
+
+            # New values may not exist in the JSON objects, so we need to be careful.
+            payload["data"].get("audited", False),
         )
 
 
