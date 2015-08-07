@@ -45,9 +45,10 @@ class Group(object):
 
 
 class User(object):
-    def __init__(self, groups, public_keys, permissions, metadata):
+    def __init__(self, groups, public_keys, permissions, metadata, enabled):
         self.groups = ResourceDict(groups)
         self.public_keys = public_keys
+        self.enabled = enabled
         self.permissions = [
             MappedPermission(**permission) for permission in permissions
         ]
@@ -63,7 +64,8 @@ class User(object):
             payload["data"]["groups"],
             payload["data"]["user"]["public_keys"],
             payload["data"]["permissions"],
-            payload["data"]["user"]["metadata"]
+            payload["data"]["user"]["metadata"],
+            payload["data"]["user"]["enabled"]
         )
 
 
