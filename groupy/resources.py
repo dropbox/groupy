@@ -1,7 +1,8 @@
 from collections import namedtuple
 
 MappedPermission = namedtuple('MappedPermission',
-                              ['permission', 'argument', 'granted_on', 'distance', 'path'])
+                              ['permission', 'argument', 'granted_on',
+                                  'distance', 'path'])
 
 UserMetadata = namedtuple('UserMetadata',
                           ['key', 'value', 'last_modified'])
@@ -39,7 +40,8 @@ class Group(object):
             payload["data"]["subgroups"],
             payload["data"]["permissions"],
 
-            # New values may not exist in the JSON objects, so we need to be careful.
+            # New values may not exist in the JSON objects, so we need to be
+            # careful.
             payload["data"].get("audited", False),
         )
 
@@ -54,7 +56,8 @@ class User(object):
         ]
         self.metadata = {
             md["data_key"]: UserMetadata(
-                key=md["data_key"], value=md["data_value"], last_modified=md["last_modified"])
+                key=md["data_key"], value=md["data_value"],
+                last_modified=md["last_modified"])
             for md in metadata
         }
 

@@ -1,24 +1,47 @@
-from clowncar.backends import Backends
+from collections import namedtuple
 import json
 from threading import Lock
 import time
+
+from clowncar.backends import Backends
 from tornado.httpclient import HTTPClient, HTTPError
 
 from . import exc
 from .collations import Users, Groups, Permissions
 
 
+Checkpoint = namedtuple('Checkpoint', ['checkpoint', 'checkpoint_time'])
+
+
 class Groupy(object):
     def __init__(self, servers, partition_key=None, timeout=3,
                  allow_time_travel=False, checkpoint=0, checkpoint_time=0,
                  max_drift=600, mark_bad_timeout=60, max_backend_tries=5):
+        """
+        The grouper client.
+
+        Args:
+            servers (list of clowncar.server.Server): avaialble API servers
+            partition_key (str): key to use for picking a server, None defaults
+                to hostname
+            timeout (int): connection and request sent to tornado's HTTPClient
+            allow_time_travel (bool): allow checkpoint[_time] to go backwards
+                in subsequent queries
+            checkpoint (int): starting checkpoint
+            checkpoint_time (float): starting checkpoint unix epoch time
+            max_drift (int): how much time in seconds before we consider data
+                from server to be stale and raise BackendMaxDriftError
+            mark_bad_timeout (int): time in seconds to not use servers that
+                have been marked as dead
+            max_backend_tries (int): number of backend servers to try before
+                giving up and raising a BackendConnectionError
+        """
 
         self._lock = Lock()
         self.timeout = timeout
         self.backends = Backends(servers, partition_key)
 
-        self.checkpoint = checkpoint
-        self.checkpoint = checkpoint_time
+        self.checkpoint = Checkpoint(checkpoint, checkpoint_time)
 
         self.allow_time_travel = allow_time_travel
         self.max_drift = max_drift
@@ -28,6 +51,11 @@ class Groupy(object):
         self.users = Users(self, "users")
         self.groups = Groups(self, "groups")
         self.permissions = Permissions(self, "permissions")
+
+    def _checkpoint_is_greater(self, a, b):
+        """Ensure elements of checkpoint 'a' are all greater than those in
+        checkpoint 'b'."""
+        return all((x > y) for x, y in zip(a, b))
 
     def _try_get(self, path):
         for idx in range(self.max_backend_tries):
@@ -68,9 +96,11 @@ class Groupy(object):
             )
 
         with self._lock:
-            new_checkpoint = out["checkpoint"]
+            new_checkpoint = Checkpoint(out["checkpoint"],
+                    out["checkpoint_time"])
             old_checkpoint = self.checkpoint
-            if new_checkpoint < old_checkpoint and not self.allow_time_travel:
+            if not self._checkpoint_is_greater(new_checkpoint,
+                    old_checkpoint) and not self.allow_time_travel:
                 raise exc.TimeTravelNotAllowed(
                     "Received checkpoint of {} when previously {}".format(
                         new_checkpoint, old_checkpoint
