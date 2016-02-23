@@ -76,10 +76,11 @@ class Groupy(object):
             **kwargs
         )
         try:
-            out = json.loads(http_client.fetch(url, **{
-                "connect_timeout": self.timeout,
-                "request_timeout": self.timeout,
-            }).body)
+            out = json.loads(http_client.fetch(
+                url,
+                connect_timeout=self.timeout,
+                request_timeout=self.timeout,
+            ).body)
         except HTTPError as err:
             if err.code == 599:
                 raise exc.BackendConnectionError(err.message, server)
