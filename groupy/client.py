@@ -1,3 +1,4 @@
+import urllib
 from collections import namedtuple
 import json
 from threading import Lock
@@ -115,3 +116,12 @@ class Groupy(object):
             self.checkpoint = new_checkpoint
 
         return out
+
+    def authenticate(self, token):
+        return self._try_fetch(
+            '/token/validate',
+            method='POST',
+            body=urllib.urlencode({
+                "token": token,
+            })
+        )
