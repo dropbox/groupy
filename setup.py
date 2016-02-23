@@ -13,9 +13,8 @@ kwargs = {
     "version": str(__version__),
     "packages": ["groupy"],
     "description": "Python client library for Grouper",
-    # PyPi, despite not parsing markdown, will prefer the README.md to the
-    # standard README. Explicitly read it here.
-    "long_description": open("README").read(),
+    # TODO(lfaraone): Check whether this is still needed for PyPI.
+    "long_description": open("README.rst").read(),
     "author": "Gary M. Josack",
     "maintainer": "Gary M. Josack",
     "author_email": "gary@dropbox.com",
