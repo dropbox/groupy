@@ -13,9 +13,9 @@ Checkpoint = namedtuple('Checkpoint', ['checkpoint', 'checkpoint_time'])
 
 
 def _checkpoint_is_greater(a, b):
-    """Ensure elements of checkpoint 'a' are all greater than those in
+    """Ensure elements of checkpoint 'a' are all greater than or equal to those in
     checkpoint 'b'."""
-    return all((x > y) for x, y in zip(a, b))
+    return all((x >= y) for x, y in zip(a, b))
 
 
 class Groupy(object):
