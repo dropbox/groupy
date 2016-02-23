@@ -8,7 +8,7 @@ class BackendError(Error):
         self.server = server
 
     def __str__(self):
-        return "({}:{}) - {}" % (
+        return "({}:{}) - {}".format(
             self.server.hostname, self.server.port, self.message
         )
 
