@@ -1,6 +1,5 @@
 import json
 
-from clowncar.server import Server
 from mock import Mock, patch
 import pytest
 
