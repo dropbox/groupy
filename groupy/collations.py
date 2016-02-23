@@ -11,7 +11,7 @@ class Collection(object):
         path = "/{}".format(self.name)
         if resource:
             path += "/{}".format(resource)
-        response = self.client._try_get(path)
+        response = self.client._try_fetch(path)
         self._check_error(response)
         return response
 
