@@ -26,7 +26,7 @@ class Groupy(object):
         The grouper client.
 
         Args:
-            servers (list of clowncar.server.Server): avaialble API servers
+            servers (list of clowncar.server.Server): available API servers
             partition_key (str): key to use for picking a server, None defaults
                 to hostname
             timeout (int): connection and request sent to tornado's HTTPClient
