@@ -15,7 +15,8 @@ class Collection(object):
         self._check_error(response)
         return response
 
-    def _check_error(self, response):
+    @staticmethod
+    def _check_error(response):
         if response["status"] == "ok":
             return
 

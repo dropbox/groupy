@@ -9,8 +9,13 @@ from tornado.httpclient import HTTPClient, HTTPError
 from . import exc
 from .collations import Users, Groups, Permissions
 
-
 Checkpoint = namedtuple('Checkpoint', ['checkpoint', 'checkpoint_time'])
+
+
+def _checkpoint_is_greater(a, b):
+    """Ensure elements of checkpoint 'a' are all greater than those in
+    checkpoint 'b'."""
+    return all((x > y) for x, y in zip(a, b))
 
 
 class Groupy(object):
@@ -52,11 +57,6 @@ class Groupy(object):
         self.groups = Groups(self, "groups")
         self.permissions = Permissions(self, "permissions")
 
-    def _checkpoint_is_greater(self, a, b):
-        """Ensure elements of checkpoint 'a' are all greater than those in
-        checkpoint 'b'."""
-        return all((x > y) for x, y in zip(a, b))
-
     def _try_get(self, path):
         for idx in range(self.max_backend_tries):
             try:
@@ -96,11 +96,13 @@ class Groupy(object):
             )
 
         with self._lock:
-            new_checkpoint = Checkpoint(out["checkpoint"],
-                    out["checkpoint_time"])
+            new_checkpoint = Checkpoint(
+                out["checkpoint"],
+                out["checkpoint_time"]
+            )
             old_checkpoint = self.checkpoint
-            if not self._checkpoint_is_greater(new_checkpoint,
-                    old_checkpoint) and not self.allow_time_travel:
+            if not _checkpoint_is_greater(new_checkpoint, old_checkpoint) and \
+                    not self.allow_time_travel:
                 raise exc.TimeTravelNotAllowed(
                     "Received checkpoint of {} when previously {}".format(
                         new_checkpoint, old_checkpoint
