@@ -5,9 +5,6 @@ sudo: false
 cache:
   directories:
     - $HOME/.cache/pip
-install:
-- pip install -r requirements-dev.txt
-- pip install .
 script:
-- py.test -v tests/
-- flake8 --count groupy/
+- python setup.py test
+- python setup.py flake8
