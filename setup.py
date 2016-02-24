@@ -22,7 +22,6 @@ kwargs = {
     "license": "Apache-2.0",
     "install_requires": required,
     "url": "https://github.com/dropbox/groupy",
-    "download_url": "https://github.com/dropbox/groupy/archive/master.tar.gz",
     "classifiers": [
         "Programming Language :: Python",
         "Topic :: Software Development",
