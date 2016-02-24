@@ -1,10 +1,11 @@
+import urllib
 from collections import namedtuple
 import json
 from threading import Lock
 import time
 
 from clowncar.backends import Backends
-from tornado.httpclient import HTTPClient, HTTPError
+from tornado.httpclient import HTTPClient, HTTPError, HTTPRequest
 
 from . import exc
 from .collations import Users, Groups, Permissions
@@ -57,10 +58,10 @@ class Groupy(object):
         self.groups = Groups(self, "groups")
         self.permissions = Permissions(self, "permissions")
 
-    def _try_get(self, path):
+    def _try_fetch(self, path, **kwargs):
         for idx in range(self.max_backend_tries):
             try:
-                return self._get(path)
+                return self._fetch(path, **kwargs)
             except exc.BackendConnectionError as err:
                 self.backends.mark_dead(err.server, self.mark_bad_timeout)
         raise exc.BackendConnectionError(
@@ -68,15 +69,19 @@ class Groupy(object):
             err.server
         )
 
-    def _get(self, path):
+    def _fetch(self, path, **kwargs):
         http_client = HTTPClient()
         server = self.backends.server
-        url = "http://{}:{}{}".format(server.hostname, server.port, path)
+        url = HTTPRequest(
+            "http://{}:{}{}".format(server.hostname, server.port, path),
+            **kwargs
+        )
         try:
-            out = json.loads(http_client.fetch(url, **{
-                "connect_timeout": self.timeout,
-                "request_timeout": self.timeout,
-            }).body)
+            out = json.loads(http_client.fetch(
+                url,
+                connect_timeout=self.timeout,
+                request_timeout=self.timeout,
+            ).body)
         except HTTPError as err:
             if err.code == 599:
                 raise exc.BackendConnectionError(err.message, server)
@@ -111,3 +116,12 @@ class Groupy(object):
             self.checkpoint = new_checkpoint
 
         return out
+
+    def authenticate(self, token):
+        return self._try_fetch(
+            '/token/validate',
+            method='POST',
+            body=urllib.urlencode({
+                "token": token,
+            })
+        )
