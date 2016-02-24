@@ -20,7 +20,6 @@ Super basic...
         print user
     for permission in grclient.users.get('zorkian'):
         print permission
-```
 
 Installation
 ------------
