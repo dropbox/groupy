@@ -9,12 +9,7 @@ kwargs = {
     "version": str(__version__),  # noqa
     "packages": ["groupy"],
     "description": "Python client library for Grouper",
-    # TODO(lfaraone): Check whether this is still needed for PyPI.
-    "long_description": open("README.rst").read(),
-    "author": "Gary M. Josack",
-    "maintainer": "Gary M. Josack",
-    "author_email": "gary@dropbox.com",
-    "maintainer_email": "gary@dropbox.com",
+    "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone",
     "license": "Apache-2.0",
     "install_requires": [
         "clowncar",
