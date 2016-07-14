@@ -47,11 +47,11 @@ class Group(object):
 
 
 class User(object):
-    def __init__(self, groups, public_keys, permissions, metadata, enabled, role_user):
+    def __init__(self, groups, public_keys, permissions, metadata, enabled, service_account):
         self.groups = ResourceDict(groups)
         self.public_keys = public_keys
         self.enabled = enabled
-        self.role_user = role_user
+        self.service_account = service_account
         self.permissions = [
             MappedPermission(**permission) for permission in permissions
         ]
