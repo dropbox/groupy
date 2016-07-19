@@ -72,6 +72,10 @@ class User(object):
         )
 
 
+class ServiceAccount(User):
+    pass
+
+
 class Permission(object):
     def __init__(self, groups):
         self.groups = {
