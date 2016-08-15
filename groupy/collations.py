@@ -1,5 +1,5 @@
 from . import exc
-from .resources import User, Group, Permission
+from .resources import User, Group, Permission, ServiceAccount
 
 
 class Collection(object):
@@ -44,6 +44,10 @@ class Groups(Collection):
 
 class Users(Collection):
     resource = User
+
+
+class ServiceAccounts(Collection):
+    resource = ServiceAccount
 
 
 class Permissions(Collection):

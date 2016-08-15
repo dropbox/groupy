@@ -8,7 +8,7 @@ from clowncar.backends import Backends
 from tornado.httpclient import HTTPClient, HTTPError, HTTPRequest
 
 from . import exc
-from .collations import Users, Groups, Permissions
+from .collations import Users, Groups, Permissions, ServiceAccounts
 
 Checkpoint = namedtuple('Checkpoint', ['checkpoint', 'checkpoint_time'])
 
@@ -57,6 +57,7 @@ class Groupy(object):
         self.users = Users(self, "users")
         self.groups = Groups(self, "groups")
         self.permissions = Permissions(self, "permissions")
+        self.service_accounts = ServiceAccounts(self, "service_accounts")
 
     def _try_fetch(self, path, **kwargs):
         for idx in range(self.max_backend_tries):
