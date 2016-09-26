@@ -75,14 +75,12 @@ class Groupy(object):
         server = self.backends.server
         url = HTTPRequest(
             "http://{}:{}{}".format(server.hostname, server.port, path),
+            connect_timeout=self.timeout,
+            request_timeout=self.timeout,
             **kwargs
         )
         try:
-            out = json.loads(http_client.fetch(
-                url,
-                connect_timeout=self.timeout,
-                request_timeout=self.timeout,
-            ).body)
+            out = json.loads(http_client.fetch(url).body)
         except HTTPError as err:
             if err.code == 599:
                 raise exc.BackendConnectionError(err.message, server)
