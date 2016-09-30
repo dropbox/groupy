@@ -22,7 +22,7 @@ def _checkpoint_is_greater(a, b):
 class Groupy(object):
     def __init__(self, servers, partition_key=None, timeout=3,
                  allow_time_travel=False, checkpoint=0, checkpoint_time=0,
-                 max_drift=600, mark_bad_timeout=60, max_backend_tries=5):
+                 mark_bad_timeout=60, max_backend_tries=5):
         """
         The grouper client.
 
@@ -35,8 +35,6 @@ class Groupy(object):
                 in subsequent queries
             checkpoint (int): starting checkpoint
             checkpoint_time (float): starting checkpoint unix epoch time
-            max_drift (int): how much time in seconds before we consider data
-                from server to be stale and raise BackendMaxDriftError
             mark_bad_timeout (int): time in seconds to not use servers that
                 have been marked as dead
             max_backend_tries (int): number of backend servers to try before
@@ -50,7 +48,6 @@ class Groupy(object):
         self.checkpoint = Checkpoint(checkpoint, checkpoint_time)
 
         self.allow_time_travel = allow_time_travel
-        self.max_drift = max_drift
         self.mark_bad_timeout = mark_bad_timeout
         self.max_backend_tries = max_backend_tries
 
@@ -92,12 +89,6 @@ class Groupy(object):
                 raise exc.BackendIntegrityError(err.message, server)
 
         now = time.time()
-        drift = now - out["checkpoint_time"]
-        if self.max_drift is not None and self.max_drift > abs(drift):
-            raise exc.BackendMaxDriftError(
-                "Backend last checkpoint stale by {} seconds.".format(drift),
-                server
-            )
 
         with self._lock:
             new_checkpoint = Checkpoint(
