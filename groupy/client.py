@@ -2,7 +2,6 @@ import urllib
 from collections import namedtuple
 import json
 from threading import Lock
-import time
 
 from clowncar.backends import Backends
 from tornado.httpclient import HTTPClient, HTTPError, HTTPRequest
@@ -87,8 +86,6 @@ class Groupy(object):
                     raise exc.BackendIntegrityError(err.message, server)
             except (ValueError, TypeError):
                 raise exc.BackendIntegrityError(err.message, server)
-
-        now = time.time()
 
         with self._lock:
             new_checkpoint = Checkpoint(
