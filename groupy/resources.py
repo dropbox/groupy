@@ -23,7 +23,7 @@ class ResourceDict(dict):
 
 
 class Group(object):
-    def __init__(self, groups, users, subgroups, permissions, audited):
+    def __init__(self, groups, users, subgroups, permissions, audited, contacts):
         self.groups = ResourceDict(groups)
         self.users = ResourceDict(users)
         self.subgroups = ResourceDict(subgroups)
@@ -31,6 +31,7 @@ class Group(object):
             MappedPermission(**permission) for permission in permissions
         ]
         self.audited = audited
+        self.contacts = contacts
 
     @classmethod
     def from_payload(cls, payload):
@@ -43,6 +44,7 @@ class Group(object):
             # New values may not exist in the JSON objects, so we need to be
             # careful.
             payload["data"].get("audited", False),
+            payload["data"]["group"].get("contacts", dict()),
         )
 
 
