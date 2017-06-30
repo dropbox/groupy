@@ -44,7 +44,8 @@ class Group(object):
             # New values may not exist in the JSON objects, so we need to be
             # careful.
             payload["data"].get("audited", False),
-            payload["data"]["group"].get("contacts", dict()),
+            # TODO(lfaraone): Figure out why we don't always return 'group'
+            payload["data"].get("group", dict()).get("contacts", dict()),
         )
 
 
