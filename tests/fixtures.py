@@ -4,6 +4,35 @@ from groupy.client import HTTPClient
 
 
 @pytest.fixture
+def service_account_response(request):
+    return {
+        u'checkpoint': 10,
+        u'checkpoint_time': 1000,
+        u'data': {
+            u'groups': {},
+            u'permissions': [{
+                u'argument': u'shell',
+                u'granted_on': 1452796706.894347,
+                u'permission': u'sudo',
+            }],
+            u'user': {
+                u'enabled': True,
+                u'metadata': [],
+                u'name': u'service@a.co',
+                u'public_keys': [],
+                u'role_user': False,
+                u'service_account': {
+                    u'description': u'Some service account',
+                    u'machine_set': u'shell',
+                    u'owner': u'security-team',
+                },
+            }
+        },
+        u'status': u'ok',
+    }
+
+
+@pytest.fixture
 def user_response(request):
     return {
         u'checkpoint': 10,
