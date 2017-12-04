@@ -16,7 +16,8 @@ kwargs = {
         "tornado>=3.2",
     ],
     "setup_requires": [
-        "flake8==2.5.0",
+        "flake8==2.5.4",
+        "flake8-import-order==0.8",
         "pytest-runner",
     ],
     "tests_require": [
