@@ -1,13 +1,15 @@
-import urllib
-from collections import namedtuple
 import json
+import urllib
+
+from collections import namedtuple
 from threading import Lock
 
 from clowncar.backends import Backends
 from tornado.httpclient import HTTPClient, HTTPError, HTTPRequest
 
 from . import exc
-from .collations import Users, Groups, Permissions, ServiceAccounts
+from .collations import Groups, Permissions, ServiceAccounts, Users
+
 
 Checkpoint = namedtuple('Checkpoint', ['checkpoint', 'checkpoint_time'])
 

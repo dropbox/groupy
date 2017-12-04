@@ -1,5 +1,5 @@
 from . import exc
-from .resources import User, Group, Permission, ServiceAccount
+from .resources import Group, Permission, ServiceAccount, User
 
 
 class Collection(object):

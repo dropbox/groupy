@@ -1,6 +1,8 @@
-from clowncar.server import Server
-from threading import Lock
 import time
+
+from threading import Lock
+
+from clowncar.server import Server
 
 
 class ServersFileLoader(object):
