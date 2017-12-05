@@ -50,13 +50,20 @@ class Group(object):
 
 
 class User(object):
-    def __init__(self, groups, public_keys, permissions, metadata, enabled):
+    def __init__(self, groups, public_keys, permissions, metadata, enabled, passwords,
+                 service_account):
         self.groups = ResourceDict(groups)
+        self.passwords = passwords
         self.public_keys = public_keys
         self.enabled = enabled
-        self.permissions = [
-            MappedPermission(**permission) for permission in permissions
-        ]
+        self.service_account = service_account
+        if self.service_account:
+            self.permissions = [
+                MappedPermission(distance=None, path=None, **permission)
+                for permission in permissions
+            ]
+        else:
+            self.permissions = [MappedPermission(**permission) for permission in permissions]
         self.metadata = {
             md["data_key"]: UserMetadata(
                 key=md["data_key"], value=md["data_value"],
@@ -71,7 +78,17 @@ class User(object):
             payload["data"]["user"]["public_keys"],
             payload["data"]["permissions"],
             payload["data"]["user"]["metadata"],
-            payload["data"]["user"]["enabled"]
+            payload["data"]["user"]["enabled"],
+
+            # New values may not exist in the JSON objects, so we need to be careful.
+            payload["data"]["user"].get("passwords", []),
+
+            # Optional field only present for service accounts.
+            #
+            # TODO(rra): ServiceAccount objects should lift these up to top-level properties and
+            # User objects should not have this, and we should return a ServiceAccount when
+            # retrieving a User with this set.
+            payload["data"]["user"].get("service_account"),
         )
 
 
