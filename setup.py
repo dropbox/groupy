@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
+import sys
+
 from setuptools import setup
 
 execfile("groupy/version.py")
+
+setup_requires = []
+if "flake8" in sys.argv:
+    setup_requires += ["flake8==2.5.0", "flake8-import-order==0.8"]
+if "test" in sys.argv:
+    setup_requires += ["pytest-runner"]
 
 kwargs = {
     "name": "groupy",
@@ -15,13 +23,12 @@ kwargs = {
         "clowncar",
         "tornado>=3.2",
     ],
-    "setup_requires": [
-        "flake8==2.5.4",
-        "flake8-import-order==0.8",
-        "pytest-runner",
-    ],
+    "setup_requires": setup_requires,
     "tests_require": [
+        "flake8==2.5.0",
+        "flake8-import-order==0.8",
         "pytest>=2.6",
+        "pytest-runner",
         "mock>=1.0",
     ],
     "url": "https://github.com/dropbox/groupy",
