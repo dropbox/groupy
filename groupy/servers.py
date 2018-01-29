@@ -1,5 +1,4 @@
 import time
-
 from threading import Lock
 
 from clowncar.server import Server
