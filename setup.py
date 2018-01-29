@@ -8,7 +8,7 @@ execfile("groupy/version.py")
 
 setup_requires = []
 if "flake8" in sys.argv:
-    setup_requires += ["flake8==2.5.0", "flake8-import-order==0.8"]
+    setup_requires += ["flake8>=3.5.0", "flake8-import-order>=0.16"]
 if "test" in sys.argv:
     setup_requires += ["pytest-runner"]
 
@@ -25,8 +25,8 @@ kwargs = {
     ],
     "setup_requires": setup_requires,
     "tests_require": [
-        "flake8==2.5.0",
-        "flake8-import-order==0.8",
+        "flake8>=3.5.0",
+        "flake8-import-order>=0.16",
         "pytest>=2.6",
         "pytest-runner",
         "mock>=1.0",
