@@ -1,4 +1,5 @@
 import json
+import logging
 import urllib
 from collections import namedtuple
 from threading import Lock
@@ -61,6 +62,7 @@ class Groupy(object):
             try:
                 return self._fetch(path, **kwargs)
             except exc.BackendConnectionError as err:
+                logging.warning("Marking server {} as dead.".format(err.server.hostname))
                 self.backends.mark_dead(err.server, self.mark_bad_timeout)
         raise exc.BackendConnectionError(
             "Tried {} servers, all failed.".format(self.max_backend_tries),
