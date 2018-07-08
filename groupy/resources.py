@@ -1,13 +1,3 @@
-from collections import namedtuple
-
-MappedPermission = namedtuple('MappedPermission',
-                              ['permission', 'argument', 'granted_on',
-                                  'distance', 'path'])
-
-UserMetadata = namedtuple('UserMetadata',
-                          ['key', 'value', 'last_modified'])
-
-
 class ResourceDict(dict):
     def __call__(self, direct=False, roles=None):
         if isinstance(roles, basestring):
@@ -28,7 +18,7 @@ class Group(object):
         self.users = ResourceDict(users)
         self.subgroups = ResourceDict(subgroups)
         self.permissions = [
-            MappedPermission(**permission) for permission in permissions
+            MappedPermission.from_payload(permission) for permission in permissions
         ]
         self.audited = audited
         self.contacts = contacts
@@ -57,18 +47,11 @@ class User(object):
         self.public_keys = public_keys
         self.enabled = enabled
         self.service_account = service_account
-        if self.service_account:
-            self.permissions = [
-                MappedPermission(distance=None, path=None, **permission)
-                for permission in permissions
-            ]
-        else:
-            self.permissions = [MappedPermission(**permission) for permission in permissions]
+        self.permissions = [
+            MappedPermission.from_payload(permission) for permission in permissions
+        ]
         self.metadata = {
-            md["data_key"]: UserMetadata(
-                key=md["data_key"], value=md["data_value"],
-                last_modified=md["last_modified"])
-            for md in metadata
+            md["data_key"]: UserMetadata.from_payload(md) for md in metadata
         }
 
     @classmethod
@@ -107,4 +90,38 @@ class Permission(object):
     def from_payload(cls, payload):
         return cls(
             payload["data"]["groups"],
+        )
+
+
+class MappedPermission(object):
+    def __init__(self, permission, argument, granted_on, distance, path):
+        self.permission = permission
+        self.argument = argument
+        self.granted_on = granted_on
+        self.distance = distance
+        self.path = path
+
+    @classmethod
+    def from_payload(cls, payload):
+        return cls(
+            payload["permission"],
+            payload["argument"],
+            payload["granted_on"],
+            payload.get("distance"),
+            payload.get("path"),
+        )
+
+
+class UserMetadata(object):
+    def __init__(self, key, value, last_modified):
+        self.key = key
+        self.value = value
+        self.last_modified = last_modified
+
+    @classmethod
+    def from_payload(cls, payload):
+        return cls(
+            payload["data_key"],
+            payload["data_value"],
+            payload["last_modified"],
         )
