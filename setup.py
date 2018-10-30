@@ -4,7 +4,7 @@ import sys
 
 from setuptools import setup
 
-execfile("groupy/version.py")
+exec(open("groupy/version.py").read())
 
 setup_requires = []
 if "flake8" in sys.argv:
