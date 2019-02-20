@@ -1,6 +1,9 @@
+import errno
 import json
 import logging
+import socket
 import urllib
+
 from collections import namedtuple
 from threading import Lock
 
@@ -89,6 +92,10 @@ class Groupy(object):
                     raise exc.BackendIntegrityError(err.message, server)
             except (ValueError, TypeError):
                 raise exc.BackendIntegrityError(err.message, server)
+        except socket.error as err:
+            if err.errno == errno.ECONNREFUSED:
+                raise exc.BackendConnectionError("socket error (Connection Refused)", server)
+            raise
 
         with self._lock:
             new_checkpoint = Checkpoint(
