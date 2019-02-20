@@ -3,7 +3,6 @@ import json
 import logging
 import socket
 import urllib
-
 from collections import namedtuple
 from threading import Lock
 
