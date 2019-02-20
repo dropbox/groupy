@@ -21,7 +21,7 @@ kwargs = {
     "license": "Apache-2.0",
     "install_requires": [
         "clowncar",
-        "tornado>=3.2",
+        "tornado==4.5.3",
     ],
     "setup_requires": setup_requires,
     "tests_require": [
