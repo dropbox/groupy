@@ -14,9 +14,16 @@ with open("groupy/version.py", "r") as version:
     code = compile(version.read(), "groupy/version.py", "exec")
     exec(code)
 
+# Installation requirements.
+with open("requirements.txt") as requirements:
+    requires = requirements.read().splitlines()
+
+# Test suite requirements.
+with open("requirements-dev.txt") as requirements:
+    test_requires = requirements.read().splitlines()
+
+# Add pytest-runner to setup_requires if running setup with the test argument.
 setup_requires = []  # type: List[str]
-if "flake8" in sys.argv:
-    setup_requires += ["flake8==3.7.5", "flake8-import-order==0.18"]
 if "test" in sys.argv:
     setup_requires += ["pytest-runner"]
 
@@ -27,15 +34,9 @@ kwargs = {
     "description": "Python client library for Grouper",
     "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone, Russ Allbery",
     "license": "Apache-2.0",
-    "install_requires": ["clowncar", "future==0.17.1", "tornado==4.5.3", "typing=3.6.4"],
+    "install_requires": requires,
     "setup_requires": setup_requires,
-    "tests_require": [
-        "flake8==3.7.5",
-        "flake8-import-order==0.18",
-        "pytest>=2.6",
-        "pytest-runner",
-        "mock>=1.0",
-    ],
+    "tests_require": test_requires,
     "url": "https://github.com/dropbox/groupy",
     "classifiers": [
         "Programming Language :: Python",
