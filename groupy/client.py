@@ -24,7 +24,7 @@ def _checkpoint_is_greater(a, b):
     # type: (Checkpoint, Checkpoint) -> bool
     """Ensure elements of checkpoint 'a' are all greater than or equal to those in
     checkpoint 'b'."""
-    return all((x >= y) for x, y in zip(a, b))
+    return a.checkpoint >= b.checkpoint and a.checkpoint_time >= b.checkpoint_time
 
 
 class Groupy(object):
