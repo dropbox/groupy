@@ -1,0 +1,5 @@
+flake8==3.7.5
+flake8-import-order==0.18
+pytest>=2.6
+pytest-runner
+mock>=1.0

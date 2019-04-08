@@ -1,13 +1,21 @@
-from . import exc
-from .resources import Group, Permission, ServiceAccount, User
+from typing import TYPE_CHECKING
+
+from groupy import exc
+from groupy.resources import Group, Permission, ServiceAccount, User
+
+if TYPE_CHECKING:
+    from typing import Any, Dict, Iterator, Optional
+    from groupy.client import Groupy
 
 
 class Collection(object):
     def __init__(self, client, name):
+        # type: (Groupy, str) -> None
         self.client = client
         self.name = name
 
     def _get(self, resource=None):
+        # type: (Optional[str]) -> Dict[str, Any]
         path = "/{}".format(self.name)
         if resource:
             path += "/{}".format(resource)
@@ -17,6 +25,7 @@ class Collection(object):
 
     @staticmethod
     def _check_error(response):
+        # type: (Dict[str, Any]) -> None
         if response["status"] == "ok":
             return
 
@@ -30,25 +39,32 @@ class Collection(object):
         raise exc.ResourceError(", ".join(combined))
 
     def __iter__(self):
+        # type: () -> Iterator[object]
         response = self._get()
         for resource in response["data"][self.name]:
             yield resource
 
-    def get(self, resource):
-        return self.resource.from_payload(self._get(resource))
-
 
 class Groups(Collection):
-    resource = Group
+    def get(self, resource):
+        # type: (str) -> Group
+        return Group.from_payload(self._get(resource))
 
 
 class Users(Collection):
-    resource = User
+    def get(self, resource):
+        # type: (str) -> User
+        return User.from_payload(self._get(resource))
 
 
 class ServiceAccounts(Collection):
-    resource = ServiceAccount
+    def get(self, resource):
+        # type: (str) -> User
+        """Service accounts do not (yet) have their own meaningful class."""
+        return ServiceAccount.from_payload(self._get(resource))
 
 
 class Permissions(Collection):
-    resource = Permission
+    def get(self, resource):
+        # type: (str) -> Permission
+        return Permission.from_payload(self._get(resource))

@@ -1,18 +1,24 @@
 import time
 from threading import Lock
+from typing import TYPE_CHECKING
 
 from clowncar.server import Server
+
+if TYPE_CHECKING:
+    from typing import Set
 
 
 class ServersFileLoader(object):
     def __init__(self, filename, cache_timeout=300):
+        # type: (str, int) -> None
         self.filename = filename
         self._lock = Lock()
         self.cache_timeout = cache_timeout
-        self._servers = {}
-        self._last_cache = 0
+        self._servers = set()  # type: Set[Server]
+        self._last_cache = 0.0
 
     def _load_servers(self):
+        # type: () -> None
         servers = set()
 
         with open(self.filename) as servers_file:
@@ -24,9 +30,9 @@ class ServersFileLoader(object):
                 if line.count(":") != 1:
                     continue
 
-                hostname, port = line.split(":")
+                hostname, port_str = line.split(":")
                 try:
-                    port = int(port)
+                    port = int(port_str)
                 except ValueError:
                     continue
 
@@ -36,6 +42,7 @@ class ServersFileLoader(object):
 
     @property
     def servers(self):
+        # type: () -> Set[Server]
         with self._lock:
             now = time.time()
             if self._last_cache + self.cache_timeout > now:
@@ -46,4 +53,5 @@ class ServersFileLoader(object):
             return self._servers
 
     def __call__(self):
+        # type: () -> Set[Server]
         return self.servers
