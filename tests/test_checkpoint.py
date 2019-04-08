@@ -1,28 +1,28 @@
 import json
 
-from mock import Mock, patch
 import pytest
+from mock import Mock, patch
 
-from fixtures import user_response
 from groupy.client import Groupy, HTTPClient
 from groupy.exc import TimeTravelNotAllowed
+from tests.fixtures import user_response  # noqa: F401
 
 
-def test_checkpoint(user_response):
+def test_checkpoint(user_response):  # noqa: F811
     res1 = Mock()
     res1.body = json.dumps({
         u'checkpoint': 10,
         u'checkpoint_time': 1000,
         u'data': user_response['data'],
         u'status': u'ok',
-        })
+    })
     res2 = Mock()
     res2.body = json.dumps({
         u'checkpoint': 11,
         u'checkpoint_time': 1001,
         u'data': user_response['data'],
         u'status': u'ok',
-        })
+    })
 
     # sunny day
     mock_fetch = Mock()

@@ -2,11 +2,11 @@ import json
 
 from mock import Mock, patch
 
-from fixtures import service_account_response
 from groupy.client import Groupy, HTTPClient
+from tests.fixtures import service_account_response  # noqa: F401
 
 
-def test_service_account(service_account_response):
+def test_service_account(service_account_response):  # noqa: F811
     res = Mock()
     res.body = json.dumps(service_account_response)
     mock_fetch = Mock()
