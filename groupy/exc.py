@@ -16,9 +16,7 @@ class BackendError(Error):
 
     def __str__(self):
         # type: () -> str
-        return "({}:{}) - {}".format(
-            self.server.hostname, self.server.port, self.message
-        )
+        return "({}:{}) - {}".format(self.server.hostname, self.server.port, self.message)
 
 
 class BackendConnectionError(BackendError):

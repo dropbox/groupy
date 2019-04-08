@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from typing import Any, Dict, List, Optional
 
 
-Checkpoint = NamedTuple('Checkpoint', [('checkpoint', int), ('checkpoint_time', float)])
+Checkpoint = NamedTuple("Checkpoint", [("checkpoint", int), ("checkpoint_time", float)])
 
 
 def _checkpoint_is_greater(a, b):
@@ -29,15 +29,15 @@ def _checkpoint_is_greater(a, b):
 
 class Groupy(object):
     def __init__(
-            self,
-            servers,  # type: List[Server]
-            partition_key=None,  # type: Optional[str]
-            timeout=3,  # type: int
-            allow_time_travel=False,  # type: bool
-            checkpoint=0,  # type: int
-            checkpoint_time=0,  # type: float
-            mark_bad_timeout=60,  # type: int
-            max_backend_tries=5,  # type: int
+        self,
+        servers,  # type: List[Server]
+        partition_key=None,  # type: Optional[str]
+        timeout=3,  # type: int
+        allow_time_travel=False,  # type: bool
+        checkpoint=0,  # type: int
+        checkpoint_time=0,  # type: float
+        mark_bad_timeout=60,  # type: int
+        max_backend_tries=5,  # type: int
     ):
         # type: (...) -> None
         """
@@ -84,8 +84,7 @@ class Groupy(object):
                 self.backends.mark_dead(err.server, self.mark_bad_timeout)
                 last_failed_server = err.server
         raise exc.BackendConnectionError(
-            "Tried {} servers, all failed.".format(self.max_backend_tries),
-            last_failed_server,
+            "Tried {} servers, all failed.".format(self.max_backend_tries), last_failed_server
         )
 
     def _fetch(self, path, **kwargs):
@@ -115,17 +114,17 @@ class Groupy(object):
             raise
 
         with self._lock:
-            new_checkpoint = Checkpoint(
-                out["checkpoint"],
-                out["checkpoint_time"]
-            )
+            new_checkpoint = Checkpoint(out["checkpoint"], out["checkpoint_time"])
             old_checkpoint = self.checkpoint
-            if not _checkpoint_is_greater(new_checkpoint, old_checkpoint) and \
-                    not self.allow_time_travel:
+            if (
+                not _checkpoint_is_greater(new_checkpoint, old_checkpoint)
+                and not self.allow_time_travel
+            ):
                 raise exc.TimeTravelNotAllowed(
                     "Received checkpoint of {} when previously {}".format(
                         new_checkpoint, old_checkpoint
-                    ), server
+                    ),
+                    server,
                 )
             self.checkpoint = new_checkpoint
 
@@ -134,9 +133,5 @@ class Groupy(object):
     def authenticate(self, token):
         # type: (str) -> Dict[str, Any]
         return self._try_fetch(
-            '/token/validate',
-            method='POST',
-            body=urllib.urlencode({
-                "token": token,
-            })
+            "/token/validate", method="POST", body=urllib.urlencode({"token": token})
         )

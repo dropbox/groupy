@@ -27,11 +27,7 @@ kwargs = {
     "description": "Python client library for Grouper",
     "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone",
     "license": "Apache-2.0",
-    "install_requires": [
-        "clowncar",
-        "tornado==4.5.3",
-        "typing==3.6.4",
-    ],
+    "install_requires": ["clowncar", "tornado==4.5.3", "typing==3.6.4"],
     "setup_requires": setup_requires,
     "tests_require": [
         "flake8==3.7.5",
@@ -46,7 +42,7 @@ kwargs = {
         "Topic :: Software Development",
         "Topic :: Software Development :: Libraries",
         "Topic :: Software Development :: Libraries :: Python Modules",
-    ]
+    ],
 }
 
 setup(**kwargs)

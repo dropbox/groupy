@@ -21,13 +21,13 @@ class ResourceDict(dict):
 
 class Group(object):
     def __init__(
-            self,
-            groups,  # type: Dict[str, Dict[str, Any]]
-            users,  # type: Dict[str, Dict[str, Any]]
-            subgroups,  # type: Dict[str, Dict[str, Any]]
-            permissions,  # type: List[Dict[str, Any]]
-            audited,  # type: bool
-            contacts,  # type: Dict[str, str]
+        self,
+        groups,  # type: Dict[str, Dict[str, Any]]
+        users,  # type: Dict[str, Dict[str, Any]]
+        subgroups,  # type: Dict[str, Dict[str, Any]]
+        permissions,  # type: List[Dict[str, Any]]
+        audited,  # type: bool
+        contacts,  # type: Dict[str, str]
     ):
         # type: (...) -> None
         self.groups = ResourceDict(groups)
@@ -47,7 +47,6 @@ class Group(object):
             payload["data"]["users"],
             payload["data"]["subgroups"],
             payload["data"]["permissions"],
-
             # New values may not exist in the JSON objects, so we need to be
             # careful.
             payload["data"].get("audited", False),
@@ -58,14 +57,14 @@ class Group(object):
 
 class User(object):
     def __init__(
-            self,
-            groups,  # type: Dict[str, Dict[str, Any]]
-            public_keys,  # type: List[Dict[str, Any]]
-            permissions,  # type: List[Dict[str, Any]]
-            metadata,  # type: List[Dict[str, str]]
-            enabled,  # type: bool
-            passwords,  # type: List[Dict[str, str]]
-            service_account,  # type: Optional[Dict[str, str]]
+        self,
+        groups,  # type: Dict[str, Dict[str, Any]]
+        public_keys,  # type: List[Dict[str, Any]]
+        permissions,  # type: List[Dict[str, Any]]
+        metadata,  # type: List[Dict[str, str]]
+        enabled,  # type: bool
+        passwords,  # type: List[Dict[str, str]]
+        service_account,  # type: Optional[Dict[str, str]]
     ):
         # type: (...) -> None
         self.groups = ResourceDict(groups)
@@ -76,9 +75,7 @@ class User(object):
         self.permissions = [
             MappedPermission.from_payload(permission) for permission in permissions
         ]
-        self.metadata = {
-            md["data_key"]: UserMetadata.from_payload(md) for md in metadata
-        }
+        self.metadata = {md["data_key"]: UserMetadata.from_payload(md) for md in metadata}
 
     @classmethod
     def from_payload(cls, payload):
@@ -89,10 +86,8 @@ class User(object):
             payload["data"]["permissions"],
             payload["data"]["user"]["metadata"],
             payload["data"]["user"]["enabled"],
-
             # New values may not exist in the JSON objects, so we need to be careful.
             payload["data"]["user"].get("passwords", []),
-
             # Optional field only present for service accounts.
             #
             # TODO(rra): ServiceAccount objects should lift these up to top-level properties and
@@ -110,16 +105,13 @@ class Permission(object):
     def __init__(self, groups):
         # type: (Dict[str, Dict[str, Any]]) -> None
         self.groups = {
-            groupname: Group.from_payload({"data": groups[groupname]})
-            for groupname in groups
+            groupname: Group.from_payload({"data": groups[groupname]}) for groupname in groups
         }
 
     @classmethod
     def from_payload(cls, payload):
         # type: (Dict[str, Any]) -> Permission
-        return cls(
-            payload["data"]["groups"],
-        )
+        return cls(payload["data"]["groups"])
 
 
 class MappedPermission(object):
@@ -153,8 +145,4 @@ class UserMetadata(object):
     @classmethod
     def from_payload(cls, payload):
         # type: (Dict[str, Any]) -> UserMetadata
-        return cls(
-            payload["data_key"],
-            payload["data_value"],
-            payload["last_modified"],
-        )
+        return cls(payload["data_key"], payload["data_value"], payload["last_modified"])
