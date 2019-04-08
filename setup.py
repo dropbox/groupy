@@ -4,7 +4,10 @@ import sys
 
 from setuptools import setup
 
-exec(open("groupy/version.py").read())
+# Define __version__.  This is equivalent to execfile but works in Python 3.
+with open("groupy/version.py", "r") as version:
+    code = compile(version.read(), "groupy/version.py", "exec")
+    exec(code)
 
 setup_requires = []
 if "flake8" in sys.argv:
@@ -14,7 +17,7 @@ if "test" in sys.argv:
 
 kwargs = {
     "name": "groupy",
-    "version": str(__version__),  # noqa
+    "version": __version__,  # noqa
     "packages": ["groupy"],
     "description": "Python client library for Grouper",
     "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone",
