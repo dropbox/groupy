@@ -1,5 +1,12 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Any, Dict, List, Optional, Union
+
+
 class ResourceDict(dict):
     def __call__(self, direct=False, roles=None):
+        # type: (bool, Union[str, List[str]]) -> Dict[str, Any]
         if isinstance(roles, basestring):
             roles = [roles]
         new_dict = {}
@@ -13,7 +20,16 @@ class ResourceDict(dict):
 
 
 class Group(object):
-    def __init__(self, groups, users, subgroups, permissions, audited, contacts):
+    def __init__(
+            self,
+            groups,  # type: Dict[str, Dict[str, Any]]
+            users,  # type: Dict[str, Dict[str, Any]]
+            subgroups,  # type: Dict[str, Dict[str, Any]]
+            permissions,  # type: List[Dict[str, Any]]
+            audited,  # type: bool
+            contacts,  # type: Dict[str, str]
+    ):
+        # type: (...) -> None
         self.groups = ResourceDict(groups)
         self.users = ResourceDict(users)
         self.subgroups = ResourceDict(subgroups)
@@ -25,6 +41,7 @@ class Group(object):
 
     @classmethod
     def from_payload(cls, payload):
+        # type: (Dict[str, Any]) -> Group
         return cls(
             payload["data"]["groups"],
             payload["data"]["users"],
@@ -40,8 +57,17 @@ class Group(object):
 
 
 class User(object):
-    def __init__(self, groups, public_keys, permissions, metadata, enabled, passwords,
-                 service_account):
+    def __init__(
+            self,
+            groups,  # type: Dict[str, Dict[str, Any]]
+            public_keys,  # type: List[Dict[str, Any]]
+            permissions,  # type: List[Dict[str, Any]]
+            metadata,  # type: List[Dict[str, str]]
+            enabled,  # type: bool
+            passwords,  # type: List[Dict[str, str]]
+            service_account,  # type: Optional[Dict[str, str]]
+    ):
+        # type: (...) -> None
         self.groups = ResourceDict(groups)
         self.passwords = passwords
         self.public_keys = public_keys
@@ -56,6 +82,7 @@ class User(object):
 
     @classmethod
     def from_payload(cls, payload):
+        # type: (Dict[str, Any]) -> User
         return cls(
             payload["data"]["groups"],
             payload["data"]["user"]["public_keys"],
@@ -81,6 +108,7 @@ class ServiceAccount(User):
 
 class Permission(object):
     def __init__(self, groups):
+        # type: (Dict[str, Dict[str, Any]]) -> None
         self.groups = {
             groupname: Group.from_payload({"data": groups[groupname]})
             for groupname in groups
@@ -88,6 +116,7 @@ class Permission(object):
 
     @classmethod
     def from_payload(cls, payload):
+        # type: (Dict[str, Any]) -> Permission
         return cls(
             payload["data"]["groups"],
         )
@@ -95,6 +124,7 @@ class Permission(object):
 
 class MappedPermission(object):
     def __init__(self, permission, argument, granted_on, distance, path):
+        # type: (str, str, float, Optional[int], Optional[List[str]]) -> None
         self.permission = permission
         self.argument = argument
         self.granted_on = granted_on
@@ -103,6 +133,7 @@ class MappedPermission(object):
 
     @classmethod
     def from_payload(cls, payload):
+        # type: (Dict[str, Any]) -> MappedPermission
         return cls(
             payload["permission"],
             payload["argument"],
@@ -114,12 +145,14 @@ class MappedPermission(object):
 
 class UserMetadata(object):
     def __init__(self, key, value, last_modified):
+        # type: (str, str, str) -> None
         self.key = key
         self.value = value
         self.last_modified = last_modified
 
     @classmethod
     def from_payload(cls, payload):
+        # type: (Dict[str, Any]) -> UserMetadata
         return cls(
             payload["data_key"],
             payload["data_value"],

@@ -1,12 +1,17 @@
 import json
+from typing import TYPE_CHECKING
 
 from mock import Mock, patch
 
 from groupy.client import Groupy, HTTPClient
 from tests.fixtures import service_account_response  # noqa: F401
 
+if TYPE_CHECKING:
+    from typing import Any, Dict, Text
+
 
 def test_service_account(service_account_response):  # noqa: F811
+    # type: (Dict[Text, Any]) -> None
     res = Mock()
     res.body = json.dumps(service_account_response)
     mock_fetch = Mock()

@@ -1,8 +1,14 @@
+from typing import TYPE_CHECKING
+
 import pytest
+
+if TYPE_CHECKING:
+    from typing import Any, Dict, Text
 
 
 @pytest.fixture
 def service_account_response(request):
+    # type: (str) -> Dict[Text, Any]
     return {
         u'checkpoint': 10,
         u'checkpoint_time': 1000,
@@ -32,6 +38,7 @@ def service_account_response(request):
 
 @pytest.fixture
 def user_response(request):
+    # type: (str) -> Dict[Text, Any]
     return {
         u'checkpoint': 10,
         u'checkpoint_time': 1000,

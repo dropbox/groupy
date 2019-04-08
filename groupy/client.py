@@ -3,29 +3,43 @@ import json
 import logging
 import socket
 import urllib
-from collections import namedtuple
 from threading import Lock
+from typing import NamedTuple, TYPE_CHECKING
 
 from clowncar.backends import Backends
 from tornado.httpclient import HTTPClient, HTTPError, HTTPRequest
 
-from . import exc
-from .collations import Groups, Permissions, ServiceAccounts, Users
+from groupy import exc
+from groupy.collations import Groups, Permissions, ServiceAccounts, Users
+
+if TYPE_CHECKING:
+    from clowncar.server import Server
+    from typing import Any, Dict, List, Optional
 
 
-Checkpoint = namedtuple('Checkpoint', ['checkpoint', 'checkpoint_time'])
+Checkpoint = NamedTuple('Checkpoint', [('checkpoint', int), ('checkpoint_time', float)])
 
 
 def _checkpoint_is_greater(a, b):
+    # type: (Checkpoint, Checkpoint) -> bool
     """Ensure elements of checkpoint 'a' are all greater than or equal to those in
     checkpoint 'b'."""
     return all((x >= y) for x, y in zip(a, b))
 
 
 class Groupy(object):
-    def __init__(self, servers, partition_key=None, timeout=3,
-                 allow_time_travel=False, checkpoint=0, checkpoint_time=0,
-                 mark_bad_timeout=60, max_backend_tries=5):
+    def __init__(
+            self,
+            servers,  # type: List[Server]
+            partition_key=None,  # type: Optional[str]
+            timeout=3,  # type: int
+            allow_time_travel=False,  # type: bool
+            checkpoint=0,  # type: int
+            checkpoint_time=0,  # type: float
+            mark_bad_timeout=60,  # type: int
+            max_backend_tries=5,  # type: int
+    ):
+        # type: (...) -> None
         """
         The grouper client.
 
@@ -60,18 +74,22 @@ class Groupy(object):
         self.service_accounts = ServiceAccounts(self, "service_accounts")
 
     def _try_fetch(self, path, **kwargs):
+        # type: (str, **Any) -> Dict[str, Any]
+        last_failed_server = None
         for idx in range(self.max_backend_tries):
             try:
                 return self._fetch(path, **kwargs)
             except exc.BackendConnectionError as err:
                 logging.warning("Marking server {} as dead.".format(err.server.hostname))
                 self.backends.mark_dead(err.server, self.mark_bad_timeout)
+                last_failed_server = err.server
         raise exc.BackendConnectionError(
             "Tried {} servers, all failed.".format(self.max_backend_tries),
-            err.server
+            last_failed_server,
         )
 
     def _fetch(self, path, **kwargs):
+        # type: (str, **Any) -> Dict[str, Any]
         http_client = HTTPClient()
         server = self.backends.server
         url = HTTPRequest(
@@ -114,6 +132,7 @@ class Groupy(object):
         return out
 
     def authenticate(self, token):
+        # type: (str) -> Dict[str, Any]
         return self._try_fetch(
             '/token/validate',
             method='POST',

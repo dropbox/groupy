@@ -1,4 +1,5 @@
 import json
+from typing import TYPE_CHECKING
 
 import pytest
 from mock import Mock, patch
@@ -7,8 +8,12 @@ from groupy.client import Groupy, HTTPClient
 from groupy.exc import TimeTravelNotAllowed
 from tests.fixtures import user_response  # noqa: F401
 
+if TYPE_CHECKING:
+    from typing import Any, Dict, Text
+
 
 def test_checkpoint(user_response):  # noqa: F811
+    # type: (Dict[Text, Any]) -> None
     res1 = Mock()
     res1.body = json.dumps({
         u'checkpoint': 10,
