@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING
 
+from future.utils import iteritems
+from past.builtins import unicode
+
 if TYPE_CHECKING:
     from typing import Any, Dict, List, Optional, Union
 
@@ -7,10 +10,10 @@ if TYPE_CHECKING:
 class ResourceDict(dict):
     def __call__(self, direct=False, roles=None):
         # type: (bool, Union[str, List[str]]) -> Dict[str, Any]
-        if isinstance(roles, basestring):
+        if isinstance(roles, str) or isinstance(roles, unicode):
             roles = [roles]
         new_dict = {}
-        for key, value in self.iteritems():
+        for key, value in iteritems(self):
             if direct and value.get("distance", 0) != 1:
                 continue
             if roles and value.get("rolename") not in roles:

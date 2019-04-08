@@ -25,9 +25,9 @@ kwargs = {
     "version": __version__,  # type: ignore  # noqa: F821
     "packages": ["groupy"],
     "description": "Python client library for Grouper",
-    "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone",
+    "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone, Russ Allbery",
     "license": "Apache-2.0",
-    "install_requires": ["clowncar", "tornado==4.5.3", "typing==3.6.4"],
+    "install_requires": ["clowncar", "future==0.17.1", "tornado==4.5.3", "typing=3.6.4"],
     "setup_requires": setup_requires,
     "tests_require": [
         "flake8==3.7.5",

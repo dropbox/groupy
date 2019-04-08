@@ -2,11 +2,11 @@ import errno
 import json
 import logging
 import socket
-import urllib
 from threading import Lock
 from typing import NamedTuple, TYPE_CHECKING
 
 from clowncar.backends import Backends
+from future import standard_library
 from tornado.httpclient import HTTPClient, HTTPError, HTTPRequest
 
 from groupy import exc
@@ -16,6 +16,8 @@ if TYPE_CHECKING:
     from clowncar.server import Server
     from typing import Any, Dict, List, Optional
 
+standard_library.install_aliases()
+import urllib.parse  # noqa: E402, I100
 
 Checkpoint = NamedTuple("Checkpoint", [("checkpoint", int), ("checkpoint_time", float)])
 
@@ -133,5 +135,5 @@ class Groupy(object):
     def authenticate(self, token):
         # type: (str) -> Dict[str, Any]
         return self._try_fetch(
-            "/token/validate", method="POST", body=urllib.urlencode({"token": token})
+            "/token/validate", method="POST", body=urllib.parse.urlencode({"token": token})
         )
