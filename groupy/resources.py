@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
-from future.utils import iteritems
-from past.builtins import unicode
+from six import iteritems, string_types
 
 if TYPE_CHECKING:
     from typing import Any, Dict, List, Optional, Union
@@ -10,7 +9,7 @@ if TYPE_CHECKING:
 class ResourceDict(dict):
     def __call__(self, direct=False, roles=None):
         # type: (bool, Union[str, List[str]]) -> Dict[str, Any]
-        if isinstance(roles, str) or isinstance(roles, unicode):
+        if isinstance(roles, string_types):
             roles = [roles]
         new_dict = {}
         for key, value in iteritems(self):
