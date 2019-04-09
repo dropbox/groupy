@@ -32,6 +32,7 @@ kwargs = {
     "version": __version__,  # type: ignore  # noqa: F821
     "packages": ["groupy"],
     "description": "Python client library for Grouper",
+    "long_description": open("README.rst").read(),
     "author": "Gary M. Josack, Mark Smith, Herbert Ho, Luke Faraone, Russ Allbery",
     "license": "Apache-2.0",
     "install_requires": requires,
