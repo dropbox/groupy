@@ -12,6 +12,6 @@ cache:
 
 install:
   - pip install -r requirements.txt
-  - pip install -r requirements-dev.txt
-  - test "$TRAVIS_PYTHON_VERSION" != 3.6 || pip install -r requirements-dev3.txt
+  - test "$TRAVIS_PYTHON_VERSION" != 2.7 || pip install -r requirements-dev2.txt
+  - test "$TRAVIS_PYTHON_VERSION" != 3.6 || pip install -r requirements-dev.txt
 script: ci/test.sh
