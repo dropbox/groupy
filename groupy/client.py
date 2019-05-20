@@ -103,14 +103,18 @@ class Groupy(object):
         try:
             out = json.loads(http_client.fetch(url).body)
         except HTTPError as err:
+            message = err.message or ""
             if err.code == 599:
-                raise exc.BackendConnectionError(err.message, server)
-            try:
-                out = json.loads(err.response.body)
-                if "status" not in out:
-                    raise exc.BackendIntegrityError(err.message, server)
-            except (ValueError, TypeError):
-                raise exc.BackendIntegrityError(err.message, server)
+                raise exc.BackendConnectionError(message, server)
+            if err.response:
+                try:
+                    out = json.loads(err.response.body)
+                    if "status" not in out:
+                        raise exc.BackendIntegrityError(message, server)
+                except (ValueError, TypeError):
+                    raise exc.BackendIntegrityError(message, server)
+            else:
+                raise exc.BackendIntegrityError(message, server)
         except socket.error as err:
             if err.errno == errno.ECONNREFUSED:
                 raise exc.BackendConnectionError("socket error (Connection Refused)", server)

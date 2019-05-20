@@ -19,7 +19,7 @@ with open("requirements.txt") as requirements:
     requires = requirements.read().splitlines()
 
 # Test suite requirements.
-with open("requirements-dev.txt") as requirements:
+with open("requirements-dev2.txt") as requirements:
     test_requires = requirements.read().splitlines()
 
 # Add pytest-runner to setup_requires if running setup with the test argument.
