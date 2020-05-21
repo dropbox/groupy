@@ -2,5 +2,6 @@ include LICENSE
 include README.rst
 include requirements.txt
 include requirements-dev.txt
+include requirements-dev2.txt
 include requirements-dev3.txt
 recursive-include tests *
