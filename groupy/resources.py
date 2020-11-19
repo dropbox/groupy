@@ -104,26 +104,28 @@ class ServiceAccount(User):
 
 
 class Permission(object):
-    def __init__(self, groups):
-        # type: (Dict[str, Dict[str, Any]]) -> None
+    def __init__(self, groups, audited):
+        # type: (Dict[str, Dict[str, Any]], Dict[str, Any]) -> None
         self.groups = {
             groupname: Group.from_payload({"data": groups[groupname]}) for groupname in groups
         }
+        self.audited = audited.get("audited")
 
     @classmethod
     def from_payload(cls, payload):
         # type: (Dict[str, Any]) -> Permission
-        return cls(payload["data"]["groups"])
+        return cls(payload["data"]["groups"], payload["data"]["audited"],)
 
 
 class MappedPermission(object):
-    def __init__(self, permission, argument, granted_on, distance, path):
-        # type: (str, str, float, Optional[int], Optional[List[str]]) -> None
+    def __init__(self, permission, argument, granted_on, distance, path, audited):
+        # type: (str, str, float, Optional[int], Optional[List[str]], Optional[bool]) -> None
         self.permission = permission
         self.argument = argument
         self.granted_on = granted_on
         self.distance = distance
         self.path = path
+        self.audited = audited
 
     @classmethod
     def from_payload(cls, payload):
@@ -134,6 +136,7 @@ class MappedPermission(object):
             payload["granted_on"],
             payload.get("distance"),
             payload.get("path"),
+            payload.get("audited"),
         )
 
 

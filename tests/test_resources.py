@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from mock import Mock, patch
 
 from groupy.client import Groupy, HTTPClient
+from tests.fixtures import permission_response  # noqa: F401
 from tests.fixtures import service_account_response  # noqa: F401
 
 if TYPE_CHECKING:
@@ -32,3 +33,16 @@ def test_service_account(service_account_response):  # noqa: F811
 
         expected = service_account_response["data"]["user"]["service_account"]
         assert service.service_account == expected
+
+
+def test_permission(permission_response):  # noqa: F811
+    # type: (Dict[Text, Any]) -> None
+    res = Mock()
+    res.body = json.dumps(permission_response)
+    mock_fetch = Mock()
+    mock_fetch.side_effect = [res]
+    with patch.object(HTTPClient, "fetch", mock_fetch):
+        client = Groupy(["localhost:8000"])
+        permission = client.permissions.get("grouper.audit.security")
+        assert permission.groups == {}
+        assert permission.audited is False
