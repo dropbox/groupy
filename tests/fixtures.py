@@ -44,7 +44,7 @@ def permission_response(request):
             u"permission": {u"name": "grouper.audit.security"},
             u"groups": {},
             u"service_accounts": {},
-            u"audited": {u"audited": False,},
+            u"audited": {u"audited": False},
         },
         u"status": u"ok",
     }
