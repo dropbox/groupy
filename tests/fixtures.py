@@ -35,6 +35,22 @@ def service_account_response(request):
 
 
 @pytest.fixture
+def permission_response(request):
+    # type: (str) -> Dict[Text, Any]
+    return {
+        u"checkpoint": 3,
+        u"checkpoint_time": 1605842894,
+        u"data": {
+            u"permission": {u"name": "grouper.audit.security"},
+            u"groups": {},
+            u"service_accounts": {},
+            u"audited": False,
+        },
+        u"status": u"ok",
+    }
+
+
+@pytest.fixture
 def user_response(request):
     # type: (str) -> Dict[Text, Any]
     return {
