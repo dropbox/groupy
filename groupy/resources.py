@@ -105,16 +105,16 @@ class ServiceAccount(User):
 
 class Permission(object):
     def __init__(self, groups, audited):
-        # type: (Dict[str, Dict[str, Any]], Dict[str, Any]) -> None
+        # type: (Dict[str, Dict[str, Any]], bool) -> None
         self.groups = {
             groupname: Group.from_payload({"data": groups[groupname]}) for groupname in groups
         }
-        self.audited = audited.get("audited")
+        self.audited = audited
 
     @classmethod
     def from_payload(cls, payload):
         # type: (Dict[str, Any]) -> Permission
-        return cls(payload["data"]["groups"], payload["data"]["audited"],)
+        return cls(payload["data"]["groups"], payload["data"]["audited"])
 
 
 class MappedPermission(object):

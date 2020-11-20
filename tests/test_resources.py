@@ -45,4 +45,5 @@ def test_permission(permission_response):  # noqa: F811
         client = Groupy(["localhost:8000"])
         permission = client.permissions.get("grouper.audit.security")
         assert permission.groups == {}
+        assert isinstance(permission.audited, bool)
         assert permission.audited is False
