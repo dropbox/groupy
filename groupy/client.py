@@ -41,6 +41,7 @@ class Groupy(object):
         checkpoint_time=0,  # type: float
         mark_bad_timeout=60,  # type: int
         max_backend_tries=5,  # type: int
+        use_ssl=False,  # type: bool
     ):
         # type: (...) -> None
         """
@@ -59,6 +60,10 @@ class Groupy(object):
                 have been marked as dead
             max_backend_tries (int): number of backend servers to try before
                 giving up and raising a BackendConnectionError
+            use_ssl (int): whether to connect to backend servers using https
+                rather than http.
+                TODO(): use_ssl should default to True. It currently defaults
+                set to False solely to preserve backwards compatibility.
         """
 
         self._lock = Lock()
@@ -70,6 +75,7 @@ class Groupy(object):
         self.allow_time_travel = allow_time_travel
         self.mark_bad_timeout = mark_bad_timeout
         self.max_backend_tries = max_backend_tries
+        self.use_ssl = use_ssl
 
         self.users = Users(self, "users")
         self.groups = Groups(self, "groups")
@@ -94,8 +100,9 @@ class Groupy(object):
         # type: (str, **Any) -> Dict[str, Any]
         http_client = HTTPClient()
         server = self.backends.server
+        protocol = "https" if self.use_ssl else "http"
         url = HTTPRequest(
-            "http://{}:{}{}".format(server.hostname, server.port, path),
+            "{}://{}:{}{}".format(protocol, server.hostname, server.port, path),
             connect_timeout=self.timeout,
             request_timeout=self.timeout,
             **kwargs
