@@ -63,7 +63,7 @@ class Groupy(object):
             use_ssl (int): whether to connect to backend servers using https
                 rather than http.
                 TODO(): use_ssl should default to True. It currently defaults
-                set to False solely to preserve backwards compatibility.
+                to False solely to preserve backwards compatibility.
         """
 
         self._lock = Lock()
