@@ -24,8 +24,7 @@ Super basic...
 Installation
 ------------
 
-New versions will be updated to PyPI pretty regularly so it should be as easy
-as:
+To pull the latest version from PyPI:
 
 .. code:: bash
 
