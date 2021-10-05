@@ -42,6 +42,7 @@ class Groupy(object):
         mark_bad_timeout=60,  # type: int
         max_backend_tries=5,  # type: int
         use_ssl=False,  # type: bool
+        request_kwargs=None,  # type: Optional[Dict[str, Any]]
     ):
         # type: (...) -> None
         """
@@ -64,6 +65,9 @@ class Groupy(object):
                 rather than http.
                 TODO(): use_ssl should default to True. It currently defaults
                 to False solely to preserve backwards compatibility.
+            request_kwargs (Dict of kwargs): additional kwargs to be passed to
+                the Tornado HTTPRequest object in every _fetch call. Individual
+                kwargs can be overwritten if specified in a given _fetch call.
         """
 
         self._lock = Lock()
@@ -76,6 +80,7 @@ class Groupy(object):
         self.mark_bad_timeout = mark_bad_timeout
         self.max_backend_tries = max_backend_tries
         self.use_ssl = use_ssl
+        self.request_kwargs = request_kwargs
 
         self.users = Users(self, "users")
         self.groups = Groups(self, "groups")
@@ -101,6 +106,10 @@ class Groupy(object):
         http_client = HTTPClient()
         server = self.backends.server
         protocol = "https" if self.use_ssl else "http"
+        if self.request_kwargs:
+            merged_kwargs = self.request_kwargs.copy()
+            merged_kwargs.update(kwargs)
+            kwargs = merged_kwargs
         url = HTTPRequest(
             "{}://{}:{}{}".format(protocol, server.hostname, server.port, path),
             connect_timeout=self.timeout,
