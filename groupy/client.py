@@ -93,7 +93,7 @@ class Groupy(object):
         for idx in range(self.max_backend_tries):
             try:
                 return self._fetch(path, **kwargs)
-            except exc.BackendConnectionError as err:
+            except (exc.BackendConnectionError, exc.BackendIntegrityError) as err:
                 logging.warning("Marking server {} as dead.".format(err.server.hostname))
                 self.backends.mark_dead(err.server, self.mark_bad_timeout)
                 last_failed_server = err.server
