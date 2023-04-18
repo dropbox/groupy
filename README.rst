@@ -2,6 +2,11 @@
 groupy
 ======
 
+Deprecation
+-----------
+
+The Grouper/Groupy projects have been deprecated. You may continue to use and maintain forks of the project, but the Dropbox team will no longer contribute to this repository.
+
 Description
 -----------
 
